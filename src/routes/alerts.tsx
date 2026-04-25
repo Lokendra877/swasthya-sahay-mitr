@@ -72,30 +72,30 @@ function Alerts() {
         <Bell className="h-5 w-5 text-primary" />
         <h2 className="text-lg font-bold">{t("alerts", lang)}</h2>
       </div>
-      <div className="space-y-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {list.map((a, i) => {
           const Icon = a.icon;
           return (
-            <Card key={i} className="rounded-2xl p-4">
-              <div className="flex items-start gap-3">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${colorMap[a.color]}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold">{a.title}</p>
-                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-secondary-foreground">
-                      {a.tag}
-                    </span>
+            <Card key={i} className="rounded-3xl border-2 p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${colorMap[a.color]} shadow-sm`}>
+                    <Icon className="h-6 w-6" />
                   </div>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{a.body}</p>
+                  <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-bold text-secondary-foreground uppercase tracking-wider">
+                    {a.tag}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-lg font-bold leading-tight">{a.title}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{a.body}</p>
                 </div>
               </div>
             </Card>
           );
         })}
       </div>
-      <p className="mt-4 text-center text-[10px] text-muted-foreground">
+      <p className="mt-8 text-center text-xs text-muted-foreground">
         {lang === "hi" ? "स्थान आधारित अलर्ट (डेमो डेटा)" : "Location-based alerts (demo data)"}
       </p>
     </MobileShell>

@@ -41,48 +41,48 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 1.25rem;
 
-  /* Calm clinical: soft mint background, deep teal foreground */
-  --background: oklch(0.985 0.012 180);
-  --foreground: oklch(0.22 0.04 200);
+  /* Medical Trust: Soft sky-blue background, deep navy foreground */
+  --background: oklch(0.99 0.005 240);
+  --foreground: oklch(0.18 0.04 250);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.04 200);
+  --card-foreground: oklch(0.18 0.04 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.04 200);
+  --popover-foreground: oklch(0.18 0.04 250);
 
-  /* Primary: calming teal-green */
-  --primary: oklch(0.62 0.13 175);
-  --primary-foreground: oklch(0.99 0 0);
+  /* Primary: Professional Medical Blue */
+  --primary: oklch(0.55 0.14 250);
+  --primary-foreground: oklch(1 0 0);
 
-  /* Trust: a deep medical blue used for accents and CTA highlights */
-  --trust: oklch(0.55 0.13 240);
-  --trust-foreground: oklch(0.99 0 0);
+  /* Trust: Brighter Cyan for accents */
+  --trust: oklch(0.65 0.16 220);
+  --trust-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.95 0.025 180);
-  --secondary-foreground: oklch(0.25 0.05 200);
+  --secondary: oklch(0.96 0.02 245);
+  --secondary-foreground: oklch(0.25 0.06 250);
 
-  --muted: oklch(0.95 0.015 200);
-  --muted-foreground: oklch(0.45 0.03 220);
+  --muted: oklch(0.97 0.01 240);
+  --muted-foreground: oklch(0.48 0.03 245);
 
-  --accent: oklch(0.93 0.04 175);
-  --accent-foreground: oklch(0.25 0.06 200);
+  --accent: oklch(0.94 0.05 230);
+  --accent-foreground: oklch(0.25 0.08 250);
 
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.9 0.02 190);
-  --input: oklch(0.92 0.02 190);
-  --ring: oklch(0.62 0.13 175);
+  --border: oklch(0.91 0.02 245);
+  --input: oklch(0.93 0.02 245);
+  --ring: oklch(0.55 0.14 250);
 
-  /* Severity tokens */
-  --emergency: oklch(0.6 0.23 25);
-  --emergency-foreground: oklch(0.99 0 0);
-  --moderate: oklch(0.75 0.17 70);
+  /* Severity tokens (adjusted for blue harmony) */
+  --emergency: oklch(0.58 0.23 25);
+  --emergency-foreground: oklch(1 0 0);
+  --moderate: oklch(0.72 0.16 65);
   --moderate-foreground: oklch(0.2 0.05 60);
-  --mild: oklch(0.72 0.16 150);
-  --mild-foreground: oklch(0.18 0.04 160);
+  --mild: oklch(0.7 0.14 160);
+  --mild-foreground: oklch(0.18 0.04 170);
 }
 
 .dark {
@@ -120,10 +120,37 @@
   }
 }
 
-/* Subtle gradient backdrop used on hero / cards */
+/* Enhanced high-end background with multiple layers of depth */
 .bg-health-gradient {
   background:
-    radial-gradient(at 20% 0%, color-mix(in oklab, var(--primary) 18%, transparent), transparent 50%),
-    radial-gradient(at 100% 100%, color-mix(in oklab, var(--trust) 18%, transparent), transparent 50%),
+    radial-gradient(at 10% 10%, color-mix(in oklab, var(--primary) 15%, transparent), transparent 45%),
+    radial-gradient(at 90% 90%, color-mix(in oklab, var(--trust) 12%, transparent), transparent 50%),
+    radial-gradient(at 50% 0%, color-mix(in oklab, var(--accent) 8%, transparent), transparent 60%),
     var(--background);
+  background-attachment: fixed;
 }
+
+.glass-card {
+  @apply border border-white/40 bg-white/60 backdrop-blur-xl shadow-2xl;
+}
+
+/* Premium custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-primary/20 hover:bg-primary/40 transition-colors;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+

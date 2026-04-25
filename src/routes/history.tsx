@@ -72,25 +72,27 @@ function History() {
       ) : reports.length === 0 ? (
         <Card className="rounded-2xl p-6 text-center text-sm text-muted-foreground">{t("noReports", lang)}</Card>
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {reports.map((r) => {
             const cfg = sevConfig[r.severity];
             const Icon = cfg.icon;
             return (
-              <Card key={r.id} className="rounded-2xl p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${cfg.cls}`}>
-                    <Icon className="h-3 w-3" /> {cfg.label}
+              <Card key={r.id} className="rounded-3xl border-2 p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold ${cfg.cls} shadow-sm`}>
+                    <Icon className="h-4 w-4" /> {cfg.label}
                   </span>
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => del(r.id)}>
-                    <Trash2 className="h-3.5 w-3.5" />
+                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-destructive/10 hover:text-destructive" onClick={() => del(r.id)}>
+                    <Trash2 className="h-5 w-5" />
                   </Button>
                 </div>
-                <p className="line-clamp-2 text-sm font-medium">{r.symptoms}</p>
-                <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{r.advice}</p>
-                <p className="mt-2 text-[10px] text-muted-foreground">
-                  {new Date(r.created_at).toLocaleString()}
-                </p>
+                <div className="space-y-3">
+                  <p className="line-clamp-2 text-base font-bold leading-tight">{r.symptoms}</p>
+                  <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">{r.advice}</p>
+                  <p className="pt-2 text-xs font-medium text-muted-foreground/60 border-t">
+                    {new Date(r.created_at).toLocaleDateString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                  </p>
+                </div>
               </Card>
             );
           })}

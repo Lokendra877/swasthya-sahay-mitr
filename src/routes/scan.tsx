@@ -70,77 +70,98 @@ function Scan() {
 
   return (
     <MobileShell>
-      <h2 className="mb-3 text-lg font-bold">{t("prescription", lang)}</h2>
+      <div className="mx-auto flex max-w-4xl flex-col gap-6 lg:flex-row lg:items-start">
+        {/* Left: Input & Preview */}
+        <div className="flex-1">
+          <Card className="rounded-3xl border-2 p-6 shadow-xl transition-all hover:border-primary/30">
+            {preview ? (
+              <div className="relative overflow-hidden rounded-2xl bg-muted/20 ring-1 ring-border">
+                <img src={preview} alt="prescription" className="max-h-80 w-full object-contain" />
+              </div>
+            ) : (
+              <div className="flex h-60 flex-col items-center justify-center rounded-2xl border-4 border-dashed border-muted bg-muted/20 text-muted-foreground transition-colors hover:bg-muted/30">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Sparkles className="h-8 w-8" />
+                </div>
+                <p className="max-w-xs px-6 text-center text-sm font-medium leading-relaxed">
+                  {lang === "hi"
+                    ? "नुस्खा की फोटो अपलोड करें या खींचें — AI सरल भाषा में समझाएगा।"
+                    : "Upload or capture a prescription. AI will explain it in simple language."}
+                </p>
+              </div>
+            )}
 
-      <Card className="rounded-2xl p-4">
-        {preview ? (
-          <img src={preview} alt="prescription" className="max-h-60 w-full rounded-xl object-contain" />
-        ) : (
-          <div className="flex h-40 flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/40 text-muted-foreground">
-            <Sparkles className="mb-2 h-6 w-6 text-primary" />
-            <p className="px-4 text-center text-xs">
-              {lang === "hi"
-                ? "नुस्खा की फोटो अपलोड करें या खींचें — AI सरल भाषा में समझाएगा।"
-                : "Upload or capture a prescription. AI will explain it in simple language."}
-            </p>
-          </div>
-        )}
-
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
-          />
-          <input
-            ref={camRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
-          />
-          <Button variant="secondary" className="h-12 rounded-xl" onClick={() => camRef.current?.click()}>
-            <Camera className="mr-2 h-4 w-4" />
-            {lang === "hi" ? "कैमरा" : "Camera"}
-          </Button>
-          <Button className="h-12 rounded-xl" onClick={() => fileRef.current?.click()}>
-            <Upload className="mr-2 h-4 w-4" /> {t("uploadImage", lang)}
-          </Button>
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
+              />
+              <input
+                ref={camRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
+              />
+              <Button size="lg" variant="secondary" className="h-14 rounded-2xl shadow-md transition-all hover:scale-[1.02]" onClick={() => camRef.current?.click()}>
+                <Camera className="mr-3 h-5 w-5" />
+                {lang === "hi" ? "कैमरा" : "Camera"}
+              </Button>
+              <Button size="lg" className="h-14 rounded-2xl shadow-md transition-all hover:scale-[1.02]" onClick={() => fileRef.current?.click()}>
+                <Upload className="mr-3 h-5 w-5" /> {t("uploadImage", lang)}
+              </Button>
+            </div>
+          </Card>
         </div>
-      </Card>
 
-      {loading && (
-        <Card className="mt-3 flex items-center gap-2 rounded-2xl p-4 text-sm text-muted-foreground">
-          <Sparkles className="h-4 w-4 animate-pulse text-primary" />
-          {t("scanning", lang)}
-        </Card>
-      )}
+        {/* Right: Results */}
+        <div className="flex-1">
+          {loading && (
+            <Card className="flex animate-pulse items-center gap-4 rounded-3xl border-primary/20 bg-primary/5 p-6 shadow-md">
+              <Sparkles className="h-6 w-6 animate-bounce text-primary" />
+              <p className="text-lg font-semibold text-primary">{t("scanning", lang)}</p>
+            </Card>
+          )}
 
-      {explanation && (
-        <Card className="mt-3 rounded-2xl border-trust/30 bg-trust/5 p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wide text-trust">
-              {lang === "hi" ? "AI व्याख्या" : "AI Explanation"}
-            </p>
-            <button
-              onClick={() => speak(explanation, lang)}
-              className="text-muted-foreground hover:text-foreground"
-              aria-label="Listen"
-            >
-              <Volume2 className="h-4 w-4" />
-            </button>
-          </div>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed">{explanation}</p>
-          <Button onClick={save} variant="secondary" className="mt-3 w-full rounded-xl">
-            <Save className="mr-2 h-4 w-4" /> {t("saveReport", lang)}
-          </Button>
-        </Card>
-      )}
+          {explanation && (
+            <Card className="rounded-3xl border-trust/30 bg-trust/5 p-6 shadow-xl backdrop-blur-sm transition-all animate-in fade-in slide-in-from-bottom-4">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-trust animate-pulse" />
+                  <p className="text-sm font-bold uppercase tracking-wider text-trust">
+                    {lang === "hi" ? "AI व्याख्या" : "AI Explanation"}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => speak(explanation, lang)}
+                  className="rounded-full text-trust hover:bg-trust/10"
+                  aria-label="Listen"
+                >
+                  <Volume2 className="h-6 w-6" />
+                </Button>
+              </div>
+              <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">{explanation}</p>
+              <Button onClick={save} size="lg" variant="secondary" className="mt-6 w-full rounded-2xl bg-trust/10 text-trust hover:bg-trust/20">
+                <Save className="mr-3 h-5 w-5" /> {t("saveReport", lang)}
+              </Button>
+            </Card>
+          )}
 
-      <p className="mt-3 text-center text-[10px] text-muted-foreground">{t("disclaimer", lang)}</p>
+          {!loading && !explanation && (
+            <div className="hidden lg:flex lg:h-full lg:flex-col lg:items-center lg:justify-center lg:p-10 lg:text-muted-foreground">
+               <p className="text-center italic opacity-50">Results will appear here...</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <p className="mt-8 text-center text-xs text-muted-foreground">{t("disclaimer", lang)}</p>
     </MobileShell>
   );
 }

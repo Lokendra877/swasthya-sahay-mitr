@@ -17,7 +17,7 @@ export function BottomNav() {
   const loc = useLocation();
   return (
     <nav className="sticky bottom-0 z-30 border-t bg-background/95 backdrop-blur">
-      <div className="mx-auto grid max-w-md grid-cols-5">
+      <div className="mx-auto grid max-w-screen-md grid-cols-5">
         {items.map(({ to, icon: Icon, key }) => {
           const active = loc.pathname === to || (to !== "/" && loc.pathname.startsWith(to));
           return (

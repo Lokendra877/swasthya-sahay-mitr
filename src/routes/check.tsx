@@ -171,14 +171,14 @@ function SymptomCheck() {
         </Button>
       </div>
 
-      <Card className="flex h-[55vh] flex-col rounded-2xl border bg-card p-3 shadow-sm">
-        <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto pr-1">
+      <Card className="mx-auto flex h-[70vh] max-w-4xl flex-col rounded-3xl border bg-card/50 p-4 shadow-xl backdrop-blur-sm md:p-6 lg:h-[75vh]">
+        <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
           {messages.map((m, i) => (
             <Bubble key={i} msg={m} lang={lang} largeText={largeText} />
           ))}
           {loading && (
-            <div className={cn("flex items-center gap-2 text-muted-foreground", largeText ? "text-base" : "text-xs")}>
-              <Sparkles className="h-3 w-3 animate-pulse" />
+            <div className={cn("flex items-center gap-3 text-muted-foreground", largeText ? "text-lg" : "text-sm")}>
+              <Sparkles className="h-4 w-4 animate-pulse text-primary" />
               {lang === "hi" ? "सोच रहा हूँ…" : "Thinking…"}
             </div>
           )}
@@ -186,38 +186,40 @@ function SymptomCheck() {
         </div>
       </Card>
 
-      {/* Input */}
-      <div className="mt-3 flex items-center gap-2">
-        <Button
-          type="button"
-          size="icon"
-          variant={speech.listening ? "destructive" : "secondary"}
-          className="h-12 w-12 shrink-0 rounded-2xl"
-          onClick={() => (speech.listening ? speech.stop() : speech.start())}
-          disabled={!speech.supported}
-          aria-label={t("speak", lang)}
-        >
-          {speech.listening ? <Square className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-        </Button>
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send(input)}
-          placeholder={speech.listening ? t("listening", lang) : t("describe", lang)}
-          className="h-12 flex-1 rounded-2xl text-base"
-        />
-        <Button
-          type="button"
-          size="icon"
-          className="h-12 w-12 shrink-0 rounded-2xl"
-          onClick={() => send(input)}
-          disabled={loading || !input.trim()}
-          aria-label={t("send", lang)}
-        >
-          <Send className="h-5 w-5" />
-        </Button>
+      {/* Input section */}
+      <div className="mx-auto mt-6 flex max-w-4xl flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            size="icon"
+            variant={speech.listening ? "destructive" : "secondary"}
+            className="h-14 w-14 shrink-0 rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95"
+            onClick={() => (speech.listening ? speech.stop() : speech.start())}
+            disabled={!speech.supported}
+            aria-label={t("speak", lang)}
+          >
+            {speech.listening ? <Square className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+          </Button>
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && send(input)}
+            placeholder={speech.listening ? t("listening", lang) : t("describe", lang)}
+            className="h-14 flex-1 rounded-2xl border-2 px-6 text-lg shadow-inner transition-colors focus:border-primary"
+          />
+          <Button
+            type="button"
+            size="icon"
+            className="h-14 w-14 shrink-0 rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95"
+            onClick={() => send(input)}
+            disabled={loading || !input.trim()}
+            aria-label={t("send", lang)}
+          >
+            <Send className="h-6 w-6" />
+          </Button>
+        </div>
+        <p className="text-center text-xs text-muted-foreground">{t("disclaimer", lang)}</p>
       </div>
-      <p className="mt-2 text-center text-[10px] text-muted-foreground">{t("disclaimer", lang)}</p>
     </MobileShell>
   );
 }

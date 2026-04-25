@@ -171,67 +171,84 @@ function Nearby() {
     <MobileShell>
       <h2 className="mb-3 text-lg font-bold">{t("nearby", lang)}</h2>
 
-      <div className="mb-3 flex gap-2">
-        <Chip active={filter === "hospital"} onClick={() => setFilter("hospital")} icon={Hospital}>
-          {lang === "hi" ? "अस्पताल" : "Hospitals"}
-        </Chip>
-        <Chip active={filter === "doctor"} onClick={() => setFilter("doctor")} icon={Stethoscope}>
-          {lang === "hi" ? "क्लीनिक" : "Clinics"}
-        </Chip>
-        <Chip active={filter === "pharmacy"} onClick={() => setFilter("pharmacy")} icon={Pill}>
-          {lang === "hi" ? "फार्मेसी" : "Pharmacy"}
-        </Chip>
-      </div>
+      <div className="flex flex-col gap-6 lg:flex-row">
+        {/* Left Column: Controls & List */}
+        <div className="flex-1 lg:max-w-md">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Chip active={filter === "hospital"} onClick={() => setFilter("hospital")} icon={Hospital}>
+              {lang === "hi" ? "अस्पताल" : "Hospitals"}
+            </Chip>
+            <Chip active={filter === "doctor"} onClick={() => setFilter("doctor")} icon={Stethoscope}>
+              {lang === "hi" ? "क्लीनिक" : "Clinics"}
+            </Chip>
+            <Chip active={filter === "pharmacy"} onClick={() => setFilter("pharmacy")} icon={Pill}>
+              {lang === "hi" ? "फार्मेसी" : "Pharmacy"}
+            </Chip>
+          </div>
 
-      <Card className="overflow-hidden rounded-2xl">
-        <div ref={mapRef} className="h-56 w-full bg-muted" />
-      </Card>
-
-      {loading && (
-        <p className="mt-4 text-center text-sm text-muted-foreground">
-          {lang === "hi" ? "नक्शा लोड हो रहा है…" : "Loading map…"}
-        </p>
-      )}
-      {err && (
-        <Card className="mt-3 border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">{err}</Card>
-      )}
-
-      <div className="mt-4 space-y-2">
-        {places.map((p) => (
-          <Card key={p.place_id} className="rounded-2xl p-3">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{p.name}</p>
-                <p className="line-clamp-1 text-xs text-muted-foreground">{p.vicinity}</p>
-                <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  {p.distance ? `${p.distance.toFixed(1)} km` : ""}
-                  {p.rating ? ` • ★ ${p.rating}` : ""}
+          <div className="space-y-3 overflow-y-auto lg:max-h-[calc(100vh-250px)] pr-2 custom-scrollbar">
+            {places.map((p) => (
+              <Card key={p.place_id} className="rounded-2xl p-4 transition-all hover:border-primary/50 hover:shadow-md">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-base font-bold">{p.name}</p>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">{p.vicinity}</p>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                        {p.distance ? `${p.distance.toFixed(1)} km` : ""}
+                      </div>
+                      {p.rating && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-amber-500">★</span>
+                          <span>{p.rating}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="shrink-0 rounded-xl"
+                    onClick={() =>
+                      window.open(
+                        `https://www.google.com/maps/dir/?api=1&destination=${p.geometry.location.lat},${p.geometry.location.lng}`,
+                        "_blank"
+                      )
+                    }
+                  >
+                    <Navigation className="h-4 w-4" />
+                  </Button>
                 </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="h-8 rounded-lg"
-                  onClick={() =>
-                    window.open(
-                      `https://www.google.com/maps/dir/?api=1&destination=${p.geometry.location.lat},${p.geometry.location.lng}`,
-                      "_blank"
-                    )
-                  }
-                >
-                  <Navigation className="mr-1 h-3 w-3" /> {t("directions", lang)}
-                </Button>
-              </div>
-            </div>
+              </Card>
+            ))}
+            {!loading && !err && places.length === 0 && (
+              <p className="py-10 text-center text-sm text-muted-foreground">
+                {lang === "hi" ? "कुछ नहीं मिला।" : "No places found nearby."}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Map */}
+        <div className="flex-[2]">
+          <Card className="sticky top-24 overflow-hidden rounded-3xl shadow-xl">
+            <div ref={mapRef} className="h-80 w-full bg-muted md:h-[500px] lg:h-[600px]" />
           </Card>
-        ))}
-        {!loading && !err && places.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground">
-            {lang === "hi" ? "कुछ नहीं मिला।" : "No places found nearby."}
-          </p>
-        )}
+          {loading && (
+            <p className="mt-4 text-center text-sm text-muted-foreground animate-pulse">
+              {lang === "hi" ? "नक्शा लोड हो रहा है…" : "Loading map…"}
+            </p>
+          )}
+          {err && (
+            <Card className="mt-3 border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive shadow-sm">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                {err}
+              </div>
+            </Card>
+          )}
+        </div>
       </div>
     </MobileShell>
   );
