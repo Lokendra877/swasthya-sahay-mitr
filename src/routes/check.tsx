@@ -292,10 +292,10 @@ function TriageCard({
       <div className={cn("mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-bold", cfg.bg)}>
         <Icon className="h-4 w-4" /> {cfg.emoji} {cfg.label}
       </div>
-      <p className="text-sm font-semibold leading-relaxed">{triage.summary}</p>
-      <p className="mt-2 text-sm leading-relaxed text-foreground">{triage.advice}</p>
+      <p className={cn("font-semibold leading-relaxed", largeText ? "text-lg" : "text-sm")}>{triage.summary}</p>
+      <p className={cn("mt-2 leading-relaxed text-foreground", largeText ? "text-lg" : "text-sm")}>{triage.advice}</p>
       {triage.red_flags && triage.red_flags.length > 0 && (
-        <ul className="mt-3 space-y-1 rounded-xl bg-muted/60 p-3 text-xs">
+        <ul className={cn("mt-3 space-y-1 rounded-xl bg-muted/60 p-3", largeText ? "text-base" : "text-xs")}>
           {triage.red_flags.map((r, i) => (
             <li key={i} className="flex items-start gap-2">
               <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-emergency" />
