@@ -254,10 +254,12 @@ function TriageCard({
   triage,
   lang,
   onSave,
+  largeText,
 }: {
   triage: Triage;
   lang: "en" | "hi";
   onSave: () => void;
+  largeText?: boolean;
 }) {
   const cfg = {
     emergency: {
