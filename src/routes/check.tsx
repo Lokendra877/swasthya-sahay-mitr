@@ -37,6 +37,7 @@ function SymptomCheck() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [triage, setTriage] = useState<Triage | null>(null);
+  const [largeText, setLargeText] = useState(false);
   const speech = useSpeechRecognition(lang);
   const scrollRef = useRef<HTMLDivElement>(null);
 
