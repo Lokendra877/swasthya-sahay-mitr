@@ -14,7 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      prescription_scans: {
+        Row: {
+          created_at: string
+          extracted_text: string
+          id: string
+          language: string
+          simplified_explanation: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          extracted_text: string
+          id?: string
+          language?: string
+          simplified_explanation: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          extracted_text?: string
+          id?: string
+          language?: string
+          simplified_explanation?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          preferred_language: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      symptom_reports: {
+        Row: {
+          advice: string
+          conversation: Json
+          created_at: string
+          id: string
+          language: string
+          severity: string
+          symptoms: string
+          user_id: string
+        }
+        Insert: {
+          advice: string
+          conversation?: Json
+          created_at?: string
+          id?: string
+          language?: string
+          severity: string
+          symptoms: string
+          user_id: string
+        }
+        Update: {
+          advice?: string
+          conversation?: Json
+          created_at?: string
+          id?: string
+          language?: string
+          severity?: string
+          symptoms?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
