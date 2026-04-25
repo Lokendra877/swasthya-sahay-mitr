@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { useSpeechRecognition, speak, stopSpeaking } from "@/hooks/useSpeech";
-import { Mic, Send, Square, AlertTriangle, Clock, Sparkles, Save, RefreshCw, Volume2 } from "lucide-react";
+import { useSpeechRecognition, speak, speakSlow, repeatLast, stopSpeaking } from "@/hooks/useSpeech";
+import { Mic, Send, Square, AlertTriangle, Clock, Sparkles, Save, RefreshCw, Volume2, Repeat, Type, Turtle, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
