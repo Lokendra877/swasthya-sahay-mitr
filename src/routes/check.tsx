@@ -120,26 +120,69 @@ function SymptomCheck() {
 
   return (
     <MobileShell>
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="text-lg font-bold">{t("symptomChecker", lang)}</h2>
-        <Button variant="ghost" size="sm" onClick={reset}>
-          <RefreshCw className="mr-1 h-4 w-4" />
-          {t("newCheck", lang)}
+        <div className="flex items-center gap-1">
+          <Button
+            variant={largeText ? "default" : "outline"}
+            size="sm"
+            onClick={() => setLargeText((v) => !v)}
+            aria-pressed={largeText}
+            aria-label={t("largeText", lang)}
+          >
+            <Type className="mr-1 h-4 w-4" />
+            {largeText ? t("normalText", lang) : t("largeText", lang)}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={reset}>
+            <RefreshCw className="mr-1 h-4 w-4" />
+            {t("newCheck", lang)}
+          </Button>
+        </div>
+      </div>
+
+      {/* Voice controls for low-literacy users */}
+      <div className="mb-3 grid grid-cols-3 gap-2">
+        <Button
+          variant="secondary"
+          className="h-12 rounded-2xl"
+          onClick={() => {
+            const last = [...messages].reverse().find((m) => m.role === "assistant");
+            if (last) speakSlow(last.content, lang);
+          }}
+          aria-label={t("slow", lang)}
+        >
+          <Turtle className="mr-1 h-5 w-5" /> {t("slow", lang)}
+        </Button>
+        <Button
+          variant="secondary"
+          className="h-12 rounded-2xl"
+          onClick={() => repeatLast()}
+          aria-label={t("repeat", lang)}
+        >
+          <Repeat className="mr-1 h-5 w-5" /> {t("repeat", lang)}
+        </Button>
+        <Button
+          variant="outline"
+          className="h-12 rounded-2xl"
+          onClick={() => stopSpeaking()}
+          aria-label={t("stop", lang)}
+        >
+          <VolumeX className="mr-1 h-5 w-5" /> {t("stop", lang)}
         </Button>
       </div>
 
       <Card className="flex h-[55vh] flex-col rounded-2xl border bg-card p-3 shadow-sm">
         <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto pr-1">
           {messages.map((m, i) => (
-            <Bubble key={i} msg={m} lang={lang} />
+            <Bubble key={i} msg={m} lang={lang} largeText={largeText} />
           ))}
           {loading && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className={cn("flex items-center gap-2 text-muted-foreground", largeText ? "text-base" : "text-xs")}>
               <Sparkles className="h-3 w-3 animate-pulse" />
               {lang === "hi" ? "सोच रहा हूँ…" : "Thinking…"}
             </div>
           )}
-          {triage && <TriageCard triage={triage} lang={lang} onSave={save} />}
+          {triage && <TriageCard triage={triage} lang={lang} onSave={save} largeText={largeText} />}
         </div>
       </Card>
 
