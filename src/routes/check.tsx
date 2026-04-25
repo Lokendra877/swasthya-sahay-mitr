@@ -222,13 +222,14 @@ function SymptomCheck() {
   );
 }
 
-function Bubble({ msg, lang }: { msg: Msg; lang: "en" | "hi" }) {
+function Bubble({ msg, lang, largeText }: { msg: Msg; lang: "en" | "hi"; largeText?: boolean }) {
   const isUser = msg.role === "user";
   return (
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+          "max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed shadow-sm",
+          largeText ? "text-lg" : "text-sm",
           isUser
             ? "rounded-br-md bg-primary text-primary-foreground"
             : "rounded-bl-md bg-secondary text-secondary-foreground"
@@ -241,7 +242,7 @@ function Bubble({ msg, lang }: { msg: Msg; lang: "en" | "hi" }) {
             className="ml-2 inline-flex align-middle text-muted-foreground hover:text-foreground"
             aria-label="Listen"
           >
-            <Volume2 className="inline h-3.5 w-3.5" />
+            <Volume2 className={cn("inline", largeText ? "h-5 w-5" : "h-3.5 w-3.5")} />
           </button>
         )}
       </div>
