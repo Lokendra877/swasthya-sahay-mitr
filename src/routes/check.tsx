@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { useSpeechRecognition, speak, stopSpeaking } from "@/hooks/useSpeech";
-import { Mic, Send, Square, AlertTriangle, Clock, Sparkles, Save, RefreshCw, Volume2 } from "lucide-react";
+import { useSpeechRecognition, speak, speakSlow, repeatLast, stopSpeaking } from "@/hooks/useSpeech";
+import { Mic, Send, Square, AlertTriangle, Clock, Sparkles, Save, RefreshCw, Volume2, Repeat, Type, Turtle, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +37,7 @@ function SymptomCheck() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [triage, setTriage] = useState<Triage | null>(null);
+  const [largeText, setLargeText] = useState(false);
   const speech = useSpeechRecognition(lang);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -119,26 +120,69 @@ function SymptomCheck() {
 
   return (
     <MobileShell>
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="text-lg font-bold">{t("symptomChecker", lang)}</h2>
-        <Button variant="ghost" size="sm" onClick={reset}>
-          <RefreshCw className="mr-1 h-4 w-4" />
-          {t("newCheck", lang)}
+        <div className="flex items-center gap-1">
+          <Button
+            variant={largeText ? "default" : "outline"}
+            size="sm"
+            onClick={() => setLargeText((v) => !v)}
+            aria-pressed={largeText}
+            aria-label={t("largeText", lang)}
+          >
+            <Type className="mr-1 h-4 w-4" />
+            {largeText ? t("normalText", lang) : t("largeText", lang)}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={reset}>
+            <RefreshCw className="mr-1 h-4 w-4" />
+            {t("newCheck", lang)}
+          </Button>
+        </div>
+      </div>
+
+      {/* Voice controls for low-literacy users */}
+      <div className="mb-3 grid grid-cols-3 gap-2">
+        <Button
+          variant="secondary"
+          className="h-12 rounded-2xl"
+          onClick={() => {
+            const last = [...messages].reverse().find((m) => m.role === "assistant");
+            if (last) speakSlow(last.content, lang);
+          }}
+          aria-label={t("slow", lang)}
+        >
+          <Turtle className="mr-1 h-5 w-5" /> {t("slow", lang)}
+        </Button>
+        <Button
+          variant="secondary"
+          className="h-12 rounded-2xl"
+          onClick={() => repeatLast()}
+          aria-label={t("repeat", lang)}
+        >
+          <Repeat className="mr-1 h-5 w-5" /> {t("repeat", lang)}
+        </Button>
+        <Button
+          variant="outline"
+          className="h-12 rounded-2xl"
+          onClick={() => stopSpeaking()}
+          aria-label={t("stop", lang)}
+        >
+          <VolumeX className="mr-1 h-5 w-5" /> {t("stop", lang)}
         </Button>
       </div>
 
       <Card className="flex h-[55vh] flex-col rounded-2xl border bg-card p-3 shadow-sm">
         <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto pr-1">
           {messages.map((m, i) => (
-            <Bubble key={i} msg={m} lang={lang} />
+            <Bubble key={i} msg={m} lang={lang} largeText={largeText} />
           ))}
           {loading && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className={cn("flex items-center gap-2 text-muted-foreground", largeText ? "text-base" : "text-xs")}>
               <Sparkles className="h-3 w-3 animate-pulse" />
               {lang === "hi" ? "सोच रहा हूँ…" : "Thinking…"}
             </div>
           )}
-          {triage && <TriageCard triage={triage} lang={lang} onSave={save} />}
+          {triage && <TriageCard triage={triage} lang={lang} onSave={save} largeText={largeText} />}
         </div>
       </Card>
 
@@ -178,13 +222,14 @@ function SymptomCheck() {
   );
 }
 
-function Bubble({ msg, lang }: { msg: Msg; lang: "en" | "hi" }) {
+function Bubble({ msg, lang, largeText }: { msg: Msg; lang: "en" | "hi"; largeText?: boolean }) {
   const isUser = msg.role === "user";
   return (
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+          "max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed shadow-sm",
+          largeText ? "text-lg" : "text-sm",
           isUser
             ? "rounded-br-md bg-primary text-primary-foreground"
             : "rounded-bl-md bg-secondary text-secondary-foreground"
@@ -197,7 +242,7 @@ function Bubble({ msg, lang }: { msg: Msg; lang: "en" | "hi" }) {
             className="ml-2 inline-flex align-middle text-muted-foreground hover:text-foreground"
             aria-label="Listen"
           >
-            <Volume2 className="inline h-3.5 w-3.5" />
+            <Volume2 className={cn("inline", largeText ? "h-5 w-5" : "h-3.5 w-3.5")} />
           </button>
         )}
       </div>
@@ -209,10 +254,12 @@ function TriageCard({
   triage,
   lang,
   onSave,
+  largeText,
 }: {
   triage: Triage;
   lang: "en" | "hi";
   onSave: () => void;
+  largeText?: boolean;
 }) {
   const cfg = {
     emergency: {
@@ -245,10 +292,10 @@ function TriageCard({
       <div className={cn("mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-bold", cfg.bg)}>
         <Icon className="h-4 w-4" /> {cfg.emoji} {cfg.label}
       </div>
-      <p className="text-sm font-semibold leading-relaxed">{triage.summary}</p>
-      <p className="mt-2 text-sm leading-relaxed text-foreground">{triage.advice}</p>
+      <p className={cn("font-semibold leading-relaxed", largeText ? "text-lg" : "text-sm")}>{triage.summary}</p>
+      <p className={cn("mt-2 leading-relaxed text-foreground", largeText ? "text-lg" : "text-sm")}>{triage.advice}</p>
       {triage.red_flags && triage.red_flags.length > 0 && (
-        <ul className="mt-3 space-y-1 rounded-xl bg-muted/60 p-3 text-xs">
+        <ul className={cn("mt-3 space-y-1 rounded-xl bg-muted/60 p-3", largeText ? "text-base" : "text-xs")}>
           {triage.red_flags.map((r, i) => (
             <li key={i} className="flex items-start gap-2">
               <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0 text-emergency" />

@@ -53,6 +53,11 @@ export const STRINGS = {
   call: { en: "Call", hi: "कॉल" },
   directions: { en: "Directions", hi: "दिशा-निर्देश" },
   noReports: { en: "No saved reports yet.", hi: "अभी कोई रिपोर्ट नहीं।" },
+  largeText: { en: "Large Text", hi: "बड़ा अक्षर" },
+  normalText: { en: "Normal Text", hi: "सामान्य अक्षर" },
+  slow: { en: "Slow", hi: "धीरे" },
+  repeat: { en: "Repeat", hi: "दोहराएँ" },
+  stop: { en: "Stop", hi: "रोकें" },
 } as const;
 
 export function t(key: keyof typeof STRINGS, lang: Lang) {
