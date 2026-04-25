@@ -28,7 +28,7 @@ type Place = {
 
 type Filter = "hospital" | "pharmacy" | "doctor";
 
-function loadGoogleMaps(apiKey: string): Promise<typeof google> {
+function loadGoogleMaps(apiKey: string): Promise<any> {
   return new Promise((resolve, reject) => {
     if ((window as any).google?.maps?.places) return resolve((window as any).google);
     const existing = document.getElementById("gmaps-script");

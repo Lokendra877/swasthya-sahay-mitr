@@ -46,7 +46,7 @@ function Home() {
 
         {!loading && !user && (
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            <Link to="/auth" className="font-medium text-trust underline-offset-2 hover:underline">
+          <Link to="/auth" search={{ redirect: "/" }} className="font-medium text-trust underline-offset-2 hover:underline">
               {t("signIn", lang)}
             </Link>{" "}
             • {t("signUp", lang)}
