@@ -43,13 +43,24 @@ export function useSpeechRecognition(lang: Lang) {
   return { listening, transcript, supported, start, stop, setTranscript };
 }
 
-export function speak(text: string, lang: Lang) {
+let lastSpoken: { text: string; lang: Lang; rate: number } | null = null;
+
+export function speak(text: string, lang: Lang, rate: number = 0.95) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = langCode(lang);
-  u.rate = 0.95;
+  u.rate = rate;
+  lastSpoken = { text, lang, rate };
   window.speechSynthesis.speak(u);
+}
+
+export function speakSlow(text: string, lang: Lang) {
+  speak(text, lang, 0.6);
+}
+
+export function repeatLast() {
+  if (lastSpoken) speak(lastSpoken.text, lastSpoken.lang, lastSpoken.rate);
 }
 
 export function stopSpeaking() {
